@@ -161,11 +161,10 @@ function RepoInput({
     <div className="w-full max-w-2xl mx-auto">
       <form onSubmit={onSubmit}>
         <div
-          className={`flex items-center bg-[#111111] border border-white/[0.1] rounded-xl overflow-hidden transition-all duration-200 ${
-            isLoading
-              ? "opacity-60 pointer-events-none"
-              : "focus-within:border-[#4F8CFF]/50 focus-within:shadow-[0_0_0_3px_rgba(79,140,255,0.08)]"
-          }`}
+          className={`flex items-center bg-[#111111] border border-white/[0.1] rounded-xl overflow-hidden transition-all duration-200 ${isLoading
+            ? "opacity-60 pointer-events-none"
+            : "focus-within:border-[#4F8CFF]/50 focus-within:shadow-[0_0_0_3px_rgba(79,140,255,0.08)]"
+            }`}
         >
           <div className="pl-4 pr-3 shrink-0">
             <Github className="w-4 h-4 text-[#444444]" />
@@ -354,13 +353,12 @@ function LoadingOverlay({
                 {/* Stage text */}
                 <div className="flex-1 min-w-0">
                   <p
-                    className={`text-sm font-medium leading-none mb-1 transition-colors duration-300 ${
-                      isDone
-                        ? "text-[#555555]"
-                        : isActive
-                          ? "text-white"
-                          : "text-[#333333]"
-                    }`}
+                    className={`text-sm font-medium leading-none mb-1 transition-colors duration-300 ${isDone
+                      ? "text-[#555555]"
+                      : isActive
+                        ? "text-white"
+                        : "text-[#333333]"
+                      }`}
                   >
                     {stage.label}
                   </p>
@@ -507,13 +505,12 @@ function ShowcaseMap() {
           transition={{ delay: 0.3 + node.delay, duration: 0.4 }}
         >
           <div
-            className={`flex items-center gap-2 px-2.5 py-1 rounded border text-[10px] font-mono transition-all duration-500 ${
-              node.accent
-                ? pulse
-                  ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/50 text-[#4F8CFF] shadow-[0_0_16px_rgba(79,140,255,0.2)]"
-                  : "bg-[#4F8CFF]/10 border-[#4F8CFF]/25 text-[#4F8CFF]"
-                : "bg-[#111111] border-white/[0.07] text-[#484848]"
-            }`}
+            className={`flex items-center gap-2 px-2.5 py-1 rounded border text-[10px] font-mono transition-all duration-500 ${node.accent
+              ? pulse
+                ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/50 text-[#4F8CFF] shadow-[0_0_16px_rgba(79,140,255,0.2)]"
+                : "bg-[#4F8CFF]/10 border-[#4F8CFF]/25 text-[#4F8CFF]"
+              : "bg-[#111111] border-white/[0.07] text-[#484848]"
+              }`}
             style={{ width: node.w }}
           >
             <div
@@ -530,34 +527,118 @@ function ShowcaseMap() {
 }
 
 // ─── Showcase 2 · Dependency Graph ───────────────────────────────────────────
-// A central selected node with radiating edges that light up sequentially
+// Edges are computed from measured node bounding boxes so every line begins
+// and ends exactly at the node border — never floating, never overshooting.
 
-const DEP_NODES = [
-  { id: "center", x: "50%", y: "44%", label: "ReactFiber.js", selected: true },
-  { id: "a", x: "12%", y: "16%", label: "scheduler.js", connected: true },
-  { id: "b", x: "68%", y: "10%", label: "ReactDOM.js", connected: true },
-  { id: "c", x: "78%", y: "55%", label: "hooks.js", connected: true },
-  { id: "d", x: "18%", y: "68%", label: "events.js", connected: true },
-  { id: "e", x: "55%", y: "76%", label: "shared.js", connected: false },
-  { id: "f", x: "8%", y: "44%", label: "context.js", connected: false },
+// Node layout: id maps to (cx%, cy%) as fractions of the container
+const DEP_NODE_LAYOUT: Record<string, { cx: number; cy: number; label: string; selected?: boolean; connected?: boolean }> = {
+  center: { cx: 0.50, cy: 0.44, label: "ReactFiber.js", selected: true },
+  a:      { cx: 0.13, cy: 0.16, label: "scheduler.js",  connected: true },
+  b:      { cx: 0.70, cy: 0.10, label: "ReactDOM.js",   connected: true },
+  c:      { cx: 0.80, cy: 0.55, label: "hooks.js",      connected: true },
+  d:      { cx: 0.18, cy: 0.68, label: "events.js",     connected: true },
+  e:      { cx: 0.55, cy: 0.78, label: "shared.js" },
+  f:      { cx: 0.07, cy: 0.44, label: "context.js" },
+};
+
+// Edges connect center → each connected node
+const DEP_EDGE_PAIRS: Array<{ from: string; to: string }> = [
+  { from: "center", to: "a" },
+  { from: "center", to: "b" },
+  { from: "center", to: "c" },
+  { from: "center", to: "d" },
 ];
 
-const DEP_EDGES = [
-  { from: "center", to: "a", fx: "50%", fy: "47%", tx: "22%", ty: "22%" },
-  { from: "center", to: "b", fx: "58%", fy: "44%", tx: "70%", ty: "18%" },
-  { from: "center", to: "c", fx: "62%", fy: "50%", tx: "80%", ty: "58%" },
-  { from: "center", to: "d", fx: "50%", fy: "54%", tx: "26%", ty: "70%" },
-];
+// Given a rect and a direction vector, find the exact point on the rect border
+// in the direction of (dx, dy) from the center.
+function rectBorderPoint(
+  rect: { x: number; y: number; w: number; h: number },
+  dx: number,
+  dy: number,
+): { x: number; y: number } {
+  if (dx === 0 && dy === 0) return { x: rect.x, y: rect.y };
+  const hw = rect.w / 2;
+  const hh = rect.h / 2;
+  // How far can we go in x vs y before hitting the border?
+  const tx = hw / Math.abs(dx);
+  const ty = hh / Math.abs(dy);
+  const t = Math.min(tx, ty);
+  return { x: rect.x + dx * t, y: rect.y + dy * t };
+}
 
 function ShowcaseDependency() {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const nodeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const [paths, setPaths] = React.useState<Array<{ id: string; d: string }>>([]);
   const [lit, setLit] = React.useState(0);
+
+  // Measure nodes and compute edge paths after render
+  React.useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const compute = () => {
+      const cRect = container.getBoundingClientRect();
+      if (cRect.width === 0) return;
+
+      const nodeRects: Record<string, { x: number; y: number; w: number; h: number }> = {};
+      for (const [id, el] of Object.entries(nodeRefs.current)) {
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        nodeRects[id] = {
+          x: r.left - cRect.left + r.width / 2,
+          y: r.top  - cRect.top  + r.height / 2,
+          w: r.width,
+          h: r.height,
+        };
+      }
+
+      const computed = DEP_EDGE_PAIRS.map(({ from, to }) => {
+        const src = nodeRects[from];
+        const tgt = nodeRects[to];
+        if (!src || !tgt) return null;
+
+        const dx = tgt.x - src.x;
+        const dy = tgt.y - src.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len === 0) return null;
+
+        const ux = dx / len;
+        const uy = dy / len;
+
+        // Start point: on the border of the source rect, heading toward target
+        const start = rectBorderPoint(src, ux, uy);
+        // End point: on the border of the target rect, heading away from source
+        const end   = rectBorderPoint(tgt, -ux, -uy);
+
+        return {
+          id: `${from}-${to}`,
+          d: `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+        };
+      }).filter(Boolean) as Array<{ id: string; d: string }>;
+
+      setPaths(computed);
+    };
+
+    // Compute immediately and on resize
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
+  // Cycle lit edges
   React.useEffect(() => {
-    const t = setInterval(() => setLit((p) => (p + 1) % (DEP_EDGES.length + 1)), 900);
+    const t = setInterval(
+      () => setLit((p) => (p + 1) % (DEP_EDGE_PAIRS.length + 1)),
+      900,
+    );
     return () => clearInterval(t);
   }, []);
 
   return (
-    <div className="absolute inset-0 bg-[#0A0A0A]">
+    <div ref={containerRef} className="absolute inset-0 bg-[#0A0A0A]">
+      {/* Dot grid */}
       <div
         aria-hidden
         className="absolute inset-0 opacity-[0.03]"
@@ -567,27 +648,50 @@ function ShowcaseDependency() {
           backgroundSize: "28px 28px",
         }}
       />
-      {/* Edges */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden>
-        {DEP_EDGES.map((e, i) => (
-          <line
-            key={i}
-            x1={e.fx} y1={e.fy} x2={e.tx} y2={e.ty}
-            stroke={lit > i ? "#3DDC84" : "#2A2A2A"}
-            strokeWidth={lit > i ? "1.5" : "1"}
-            strokeDasharray="4 4"
-            style={{ transition: "stroke 0.3s, stroke-width 0.3s" }}
-          />
-        ))}
+
+      {/* Computed edge paths — perfectly anchored to node borders */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        aria-hidden
+        style={{ overflow: "visible" }}
+      >
+        <defs>
+          {/* Reusable dash pattern so spacing never stretches */}
+          <pattern id="depDash" patternUnits="userSpaceOnUse" width="8" height="1">
+            <line x1="0" y1="0.5" x2="5" y2="0.5" stroke="inherit" strokeWidth="1" />
+          </pattern>
+        </defs>
+
+        {paths.map(({ id, d }, i) => {
+          const active = lit > i;
+          return (
+            <path
+              key={id}
+              d={d}
+              fill="none"
+              stroke={active ? "#3DDC84" : "#252525"}
+              strokeWidth={active ? 1.5 : 1}
+              strokeDasharray="5 4"
+              strokeLinecap="round"
+              style={{ transition: "stroke 0.35s ease, stroke-width 0.35s ease" }}
+            />
+          );
+        })}
       </svg>
-      {/* Nodes */}
-      {DEP_NODES.map((n) => (
+
+      {/* Nodes — each inner div is the measured element */}
+      {Object.entries(DEP_NODE_LAYOUT).map(([id, n]) => (
         <div
-          key={n.id}
+          key={id}
           className="absolute"
-          style={{ left: n.x, top: n.y, transform: "translate(-50%, -50%)" }}
+          style={{
+            left: `${n.cx * 100}%`,
+            top:  `${n.cy * 100}%`,
+            transform: "translate(-50%, -50%)",
+          }}
         >
           <div
+            ref={(el) => { nodeRefs.current[id] = el; }}
             className={`px-2.5 py-1 rounded border text-[10px] font-mono whitespace-nowrap transition-all duration-300 ${
               n.selected
                 ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/60 text-[#4F8CFF] shadow-[0_0_20px_rgba(79,140,255,0.25)]"
@@ -600,6 +704,8 @@ function ShowcaseDependency() {
           </div>
         </div>
       ))}
+
+      {/* Bottom gradient fade */}
       <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
     </div>
   );
@@ -672,9 +778,8 @@ function ShowcaseSearch() {
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.07 }}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[10px] font-mono ${
-                  i === 0 ? "bg-[#4F8CFF]/10 border border-[#4F8CFF]/20" : "bg-[#111111] border border-white/[0.05]"
-                }`}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[10px] font-mono ${i === 0 ? "bg-[#4F8CFF]/10 border border-[#4F8CFF]/20" : "bg-[#111111] border border-white/[0.05]"
+                  }`}
               >
                 <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 0 ? "bg-[#4F8CFF]" : "bg-[#333333]"}`} />
                 <span className={i === 0 ? "text-[#4F8CFF]" : "text-[#555555]"}>{r.name}</span>
@@ -1156,7 +1261,7 @@ export default function Home() {
             <div className="flex items-center gap-2 text-[#3A3A3A] text-xs">
               <span className="font-semibold text-[#4F8CFF]">v1.0.0</span>
               <span>·</span>
-              <span>© 2026 CodeAtlas</span>
+              <span>© 2026 CodeAtlas by <a href="https://github.com/isthatpratham" target="_blank" className="hover:text-white transition-colors">Pratham</a></span>
             </div>
             <div className="flex items-center gap-5 text-xs text-[#444444]">
               <a
