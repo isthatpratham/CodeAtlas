@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect } from "react";
 import {
   ReactFlow,
@@ -5,7 +7,6 @@ import {
   Background,
   BackgroundVariant,
   useReactFlow,
-  ReactFlowProvider,
   Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -43,12 +44,12 @@ export function GraphCanvas() {
     setSelectedNodeId(null);
   }, [setSelectedNodeId]);
 
-  // Fit view on initial load of repository
+  // Fit view on initial load — generous padding so the full graph is visible
   useEffect(() => {
     if (repository && nodes.length > 0) {
       setTimeout(() => {
-        fitView({ padding: 0.1, duration: 800 });
-      }, 100);
+        fitView({ padding: 0.15, duration: 900 });
+      }, 120);
     }
   }, [repository, fitView, nodes.length]);
 
@@ -57,7 +58,7 @@ export function GraphCanvas() {
   };
 
   const handleFit = () => {
-    fitView({ padding: 0.1, duration: 800 });
+    fitView({ padding: 0.15, duration: 800 });
   };
 
   // Node coloring for MiniMap
@@ -67,7 +68,7 @@ export function GraphCanvas() {
       case "root":
         return "#4F8CFF";
       case "folder":
-        return "rgba(255, 255, 255, 0.08)";
+        return "rgba(255,255,255,0.06)";
       case "file":
         return "#3DDC84";
       default:
@@ -85,58 +86,58 @@ export function GraphCanvas() {
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
         onPaneClick={handlePaneClick}
-        minZoom={0.05}
+        minZoom={0.04}
         maxZoom={3.0}
-        fitViewOptions={{ padding: 0.1 }}
-        attributionPosition="bottom-left"
+        fitViewOptions={{ padding: 0.15 }}
+        // Remove the "React Flow" attribution badge
+        proOptions={{ hideAttribution: true }}
       >
         <Background
-          color="#222"
-          gap={20}
+          color="#1e1e1e"
+          gap={24}
           size={1}
           variant={BackgroundVariant.Dots}
         />
 
-        {/* Custom Minimap */}
         <MiniMap
           zoomable
           pannable
           nodeColor={getMiniMapNodeColor}
           style={{
-            background: "#0A0A0A",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "6px",
+            background: "#0D0D0D",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "8px",
           }}
-          maskColor="rgba(0, 0, 0, 0.6)"
+          maskColor="rgba(0,0,0,0.55)"
         />
 
-        {/* Custom Visual Toolbar Controls */}
-        <div className="absolute left-4 top-4 flex flex-col bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-10 overflow-hidden divide-y divide-[rgba(255,255,255,0.05)]">
+        {/* Zoom / Camera toolbar */}
+        <div className="absolute left-4 top-4 flex flex-col bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-lg shadow-[0_4px_16px_rgba(0,0,0,0.6)] z-10 overflow-hidden divide-y divide-[rgba(255,255,255,0.05)]">
           <button
-            onClick={() => zoomIn({ duration: 300 })}
+            onClick={() => zoomIn({ duration: 250 })}
             title="Zoom In"
-            className="p-2 text-[#B5B5B5] hover:text-white hover:bg-[rgba(255,255,255,0.03)] transition-colors"
+            className="p-2 text-[#757575] hover:text-white hover:bg-[rgba(255,255,255,0.04)] transition-colors"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
           <button
-            onClick={() => zoomOut({ duration: 300 })}
+            onClick={() => zoomOut({ duration: 250 })}
             title="Zoom Out"
-            className="p-2 text-[#B5B5B5] hover:text-white hover:bg-[rgba(255,255,255,0.03)] transition-colors"
+            className="p-2 text-[#757575] hover:text-white hover:bg-[rgba(255,255,255,0.04)] transition-colors"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
           <button
             onClick={handleFit}
             title="Fit to Screen"
-            className="p-2 text-[#B5B5B5] hover:text-white hover:bg-[rgba(255,255,255,0.03)] transition-colors"
+            className="p-2 text-[#757575] hover:text-white hover:bg-[rgba(255,255,255,0.04)] transition-colors"
           >
             <Maximize className="w-4 h-4" />
           </button>
           <button
             onClick={handleReset}
             title="Reset Camera"
-            className="p-2 text-[#B5B5B5] hover:text-white hover:bg-[rgba(255,255,255,0.03)] transition-colors"
+            className="p-2 text-[#757575] hover:text-white hover:bg-[rgba(255,255,255,0.04)] transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
           </button>

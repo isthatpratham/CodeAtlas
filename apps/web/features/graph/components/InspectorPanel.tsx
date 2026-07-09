@@ -3,7 +3,6 @@ import {
   X,
   FileCode,
   Folder,
-  Info,
   Star,
   ArrowRight,
   CornerDownRight,
@@ -17,15 +16,9 @@ export function InspectorPanel() {
   const node = rawNodes.find((n) => n.id === selectedNodeId);
 
   if (!node) {
-    return (
-      <div className="w-80 shrink-0 border-l border-[rgba(255,255,255,0.08)] bg-[#0A0A0A] p-6 flex flex-col items-center justify-center text-center text-[#757575] font-montserrat">
-        <Info className="w-8 h-8 mb-2 text-[#757575]" />
-        <span className="text-sm">
-          Select any file or folder to inspect its architecture
-        </span>
-      </div>
-    );
+    return null;
   }
+
 
   const isFolder = node.type === "folder" || node.type === "root";
   const metadata = node.metadata;

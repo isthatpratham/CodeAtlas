@@ -19,4 +19,9 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  caret-color: #4F8CFF;
 }
