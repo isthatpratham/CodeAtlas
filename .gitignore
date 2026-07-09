@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+.pnpm-store
+.tmp/
+
+# Next.js build output
+.next/
+out/
+
+# NestJS build output
+dist/
+build/
+
+# Turborepo cache
+.turbo/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

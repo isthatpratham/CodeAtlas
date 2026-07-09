@@ -1,0 +1,20 @@
+{
+  "name": "@codeatlas/eslint-config",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "base.js",
+  "files": [
+    "base.js",
+    "next.js",
+    "nest.js",
+    "nest-flat.js"
+  ],
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint-config-next": "15.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1"
+  }
+}

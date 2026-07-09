@@ -1,0 +1,10 @@
+{
+  "extends": "@codeatlas/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "codeatlas-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.4",
+    "typescript": "^5.5.4",
+    "prettier": "^3.3.3"
+  }
+}
