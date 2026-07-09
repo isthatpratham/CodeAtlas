@@ -7,7 +7,7 @@ import {
   HttpException,
   HttpStatus,
 } from "@nestjs/common";
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/rest";
 
 @Injectable()
 export class GithubService {
