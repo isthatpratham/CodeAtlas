@@ -8,7 +8,6 @@
   [![Monorepo Turborepo](https://img.shields.io/badge/Build-Turborepo-FF1E56?logo=turborepo&logoColor=white)](https://turbo.build)
   [![React Flow](https://img.shields.io/badge/Graph-React%20Flow-FF007F)](https://reactflow.dev)
 </div>
-
 <br />
 
 **CodeAtlas** is an advanced software architecture exploration platform that transforms flat, complex codebases into living, interactive spatial maps. By cloning public GitHub repositories, scanning their file structures, parsing AST (Abstract Syntax Tree) relationships via the TypeScript Compiler API, and rendering them in an optimized interactive canvas, CodeAtlas lets you navigate codebase structure and dependencies like Google Maps.
