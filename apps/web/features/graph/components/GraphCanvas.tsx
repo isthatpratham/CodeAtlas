@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -12,6 +12,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useGraphStore } from "../store";
 import { RootNode, FolderNode, FileNode } from "./custom-nodes";
+import { CodeAtlasEdge } from "./CodeAtlasEdge";
 import { Maximize, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 
 const nodeTypes = {
@@ -20,18 +21,47 @@ const nodeTypes = {
   file: FileNode,
 };
 
+const edgeTypes = {
+  custom: CodeAtlasEdge,
+};
+
+const PERSPECTIVE_STORAGE_KEY = "codeatlas:perspective";
+
 export function GraphCanvas() {
   const {
     nodes,
     edges,
     selectedNodeId,
+    activePerspective,
+    setPerspective,
     setSelectedNodeId,
+    setHoveredNodeId,
     onNodesChange,
     onEdgesChange,
     repository,
   } = useGraphStore();
 
   const { fitView, zoomIn, zoomOut, setViewport } = useReactFlow();
+
+  // ── Hydrate persisted perspective on first mount ─────────────────────────
+  // The store initialises with "architecture" but we immediately correct it
+  // to whatever is in localStorage without triggering a network request.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+    const stored = localStorage.getItem(PERSPECTIVE_STORAGE_KEY);
+    if (
+      stored &&
+      stored !== "architecture" &&
+      (stored === "dependency" || stored === "radial")
+    ) {
+      // Only switch if a repository is already loaded (e.g. hot reload)
+      if (repository) {
+        setPerspective(stored as "dependency" | "radial");
+      }
+    }
+  }, [repository, setPerspective]);
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
@@ -44,14 +74,39 @@ export function GraphCanvas() {
     setSelectedNodeId(null);
   }, [setSelectedNodeId]);
 
-  // Fit view on initial load — generous padding so the full graph is visible
+  const handleNodeMouseEnter = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      setHoveredNodeId(node.id);
+    },
+    [setHoveredNodeId],
+  );
+
+  const handleNodeMouseLeave = useCallback(() => {
+    setHoveredNodeId(null);
+  }, [setHoveredNodeId]);
+
+  // ── Fit view on initial repository load ──────────────────────────────────
   useEffect(() => {
     if (repository && nodes.length > 0) {
       setTimeout(() => {
         fitView({ padding: 0.15, duration: 900 });
       }, 120);
     }
-  }, [repository, fitView, nodes.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repository, fitView]);
+
+  // ── Fit view when perspective changes ────────────────────────────────────
+  // Triggered by activePerspective — gives a smooth re-frame after the
+  // node positions update.
+  const prevPerspectiveRef = useRef(activePerspective);
+  useEffect(() => {
+    if (activePerspective !== prevPerspectiveRef.current) {
+      prevPerspectiveRef.current = activePerspective;
+      setTimeout(() => {
+        fitView({ padding: 0.18, duration: 750 });
+      }, 80);
+    }
+  }, [activePerspective, fitView]);
 
   const handleReset = () => {
     setViewport({ x: 0, y: 0, zoom: 1.0 }, { duration: 800 });
@@ -61,7 +116,7 @@ export function GraphCanvas() {
     fitView({ padding: 0.15, duration: 800 });
   };
 
-  // Node coloring for MiniMap
+  // Node coloring for MiniMap — reflects active perspective
   const getMiniMapNodeColor = (node: Node) => {
     if (node.id === selectedNodeId) return "#4F8CFF";
     switch (node.type) {
@@ -82,14 +137,16 @@ export function GraphCanvas() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
         onPaneClick={handlePaneClick}
+        onNodeMouseEnter={handleNodeMouseEnter}
+        onNodeMouseLeave={handleNodeMouseLeave}
         minZoom={0.04}
         maxZoom={3.0}
         fitViewOptions={{ padding: 0.15 }}
-        // Remove the "React Flow" attribution badge
         proOptions={{ hideAttribution: true }}
       >
         <Background

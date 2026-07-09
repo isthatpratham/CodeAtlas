@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   title: "CodeAtlas | Interactive GitHub Repository Visualization",
   description:
     "Visualize and explore any GitHub repository as an interactive map. Analyze file structures, semantic code architectures, and dependencies instantly.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   keywords: [
     "GitHub",
     "visualizer",

@@ -25,3 +25,13 @@ body {
   scroll-behavior: smooth;
   caret-color: #4F8CFF;
 }
+
+@keyframes codeatlas-pulse-flow {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+

@@ -12,7 +12,8 @@ async function bootstrap() {
   // Register global filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  await app.listen(DEFAULT_PORT);
-  console.log(`CodeAtlas API is running on: http://localhost:${DEFAULT_PORT}`);
+  const port = process.env.PORT || DEFAULT_PORT;
+  await app.listen(port);
+  console.log(`CodeAtlas API is running on: http://localhost:${port}`);
 }
 bootstrap();

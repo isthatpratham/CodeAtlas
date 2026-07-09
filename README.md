@@ -1,7 +1,5 @@
 <div align="center">
-  <div style="width: 80px; height: 80px; background-color: #4F8CFF; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(79, 140, 255, 0.4);">
-    C
-  </div>
+  <img src="./logo.png" width="80" height="80" alt="CodeAtlas Logo" style="margin-bottom: 16px;" />
   <h1>CodeAtlas</h1>
   <p><strong>Interactive GitHub Repository Visualization Platform</strong></p>
 </div>

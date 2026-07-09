@@ -108,9 +108,12 @@ function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-12">
         <div className="flex items-center gap-2.5 select-none">
-          <span className="w-6 h-6 rounded bg-[#4F8CFF] flex items-center justify-center text-[10px] font-bold text-white">
-            CA
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="CodeAtlas Logo"
+            className="w-8 h-8 object-contain"
+          />
           <span className="font-semibold text-sm tracking-widest text-white uppercase">
             CodeAtlas
           </span>
@@ -161,10 +164,11 @@ function RepoInput({
     <div className="w-full max-w-2xl mx-auto">
       <form onSubmit={onSubmit}>
         <div
-          className={`flex items-center bg-[#111111] border border-white/[0.1] rounded-xl overflow-hidden transition-all duration-200 ${isLoading
-            ? "opacity-60 pointer-events-none"
-            : "focus-within:border-[#4F8CFF]/50 focus-within:shadow-[0_0_0_3px_rgba(79,140,255,0.08)]"
-            }`}
+          className={`flex items-center bg-[#111111] border border-white/[0.1] rounded-xl overflow-hidden transition-all duration-200 ${
+            isLoading
+              ? "opacity-60 pointer-events-none"
+              : "focus-within:border-[#4F8CFF]/50 focus-within:shadow-[0_0_0_3px_rgba(79,140,255,0.08)]"
+          }`}
         >
           <div className="pl-4 pr-3 shrink-0">
             <Github className="w-4 h-4 text-[#444444]" />
@@ -243,9 +247,9 @@ function useLoadingStages(loadingState: string): {
 
   // Map store state → minimum stage index that must be showing
   const stateFloor: Record<string, number> = {
-    analyzing: 2,      // at least "Analyzing Structure"
+    analyzing: 2, // at least "Analyzing Structure"
     "loading-graph": 4, // at least "Generating Architecture"
-    rendering: 5,       // "Preparing Workspace"
+    rendering: 5, // "Preparing Workspace"
   };
 
   React.useEffect(() => {
@@ -284,7 +288,9 @@ function LoadingOverlay({
   onCancel: () => void;
 }) {
   const { activeIndex, completedIndices } = useLoadingStages(loadingState);
-  const repoName = repoUrl.replace("https://github.com/", "").replace("http://github.com/", "");
+  const repoName = repoUrl
+    .replace("https://github.com/", "")
+    .replace("http://github.com/", "");
 
   return (
     <motion.div
@@ -323,7 +329,6 @@ function LoadingOverlay({
           {STAGES.map((stage, i) => {
             const isDone = completedIndices.has(i);
             const isActive = i === activeIndex;
-            const isPending = i > activeIndex;
 
             return (
               <motion.div
@@ -339,7 +344,11 @@ function LoadingOverlay({
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 280, damping: 20 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 280,
+                        damping: 20,
+                      }}
                     >
                       <Check className="w-4 h-4 text-[#3DDC84]" />
                     </motion.div>
@@ -353,12 +362,13 @@ function LoadingOverlay({
                 {/* Stage text */}
                 <div className="flex-1 min-w-0">
                   <p
-                    className={`text-sm font-medium leading-none mb-1 transition-colors duration-300 ${isDone
-                      ? "text-[#555555]"
-                      : isActive
-                        ? "text-white"
-                        : "text-[#333333]"
-                      }`}
+                    className={`text-sm font-medium leading-none mb-1 transition-colors duration-300 ${
+                      isDone
+                        ? "text-[#555555]"
+                        : isActive
+                          ? "text-white"
+                          : "text-[#333333]"
+                    }`}
                   >
                     {stage.label}
                   </p>
@@ -440,10 +450,38 @@ function BrowserShell({
 const MAP_NODES = [
   { x: "10%", y: "20%", w: 108, label: "packages/", accent: true, delay: 0 },
   { x: "28%", y: "8%", w: 90, label: "react-dom/", accent: false, delay: 0.08 },
-  { x: "50%", y: "6%", w: 104, label: "react/src/", accent: false, delay: 0.16 },
-  { x: "70%", y: "12%", w: 84, label: "scheduler/", accent: false, delay: 0.24 },
-  { x: "18%", y: "50%", w: 96, label: "reconciler/", accent: false, delay: 0.32 },
-  { x: "42%", y: "42%", w: 124, label: "ReactFiber.js", accent: true, delay: 0.4 },
+  {
+    x: "50%",
+    y: "6%",
+    w: 104,
+    label: "react/src/",
+    accent: false,
+    delay: 0.16,
+  },
+  {
+    x: "70%",
+    y: "12%",
+    w: 84,
+    label: "scheduler/",
+    accent: false,
+    delay: 0.24,
+  },
+  {
+    x: "18%",
+    y: "50%",
+    w: 96,
+    label: "reconciler/",
+    accent: false,
+    delay: 0.32,
+  },
+  {
+    x: "42%",
+    y: "42%",
+    w: 124,
+    label: "ReactFiber.js",
+    accent: true,
+    delay: 0.4,
+  },
   { x: "66%", y: "44%", w: 88, label: "hooks/", accent: false, delay: 0.48 },
   { x: "12%", y: "74%", w: 76, label: "events/", accent: false, delay: 0.56 },
   { x: "36%", y: "70%", w: 100, label: "shared/", accent: false, delay: 0.64 },
@@ -474,7 +512,10 @@ function ShowcaseMap() {
         }}
       />
       {/* Edge lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden>
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        aria-hidden
+      >
         {[
           { x1: "16%", y1: "28%", x2: "44%", y2: "45%", blue: true },
           { x1: "53%", y1: "14%", x2: "44%", y2: "42%", blue: true },
@@ -484,7 +525,10 @@ function ShowcaseMap() {
         ].map((e, i) => (
           <motion.line
             key={i}
-            x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2}
+            x1={e.x1}
+            y1={e.y1}
+            x2={e.x2}
+            y2={e.y2}
             stroke={e.blue ? "#4F8CFF" : "#3A3A3A"}
             strokeWidth="1"
             strokeDasharray="4 4"
@@ -505,12 +549,13 @@ function ShowcaseMap() {
           transition={{ delay: 0.3 + node.delay, duration: 0.4 }}
         >
           <div
-            className={`flex items-center gap-2 px-2.5 py-1 rounded border text-[10px] font-mono transition-all duration-500 ${node.accent
-              ? pulse
-                ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/50 text-[#4F8CFF] shadow-[0_0_16px_rgba(79,140,255,0.2)]"
-                : "bg-[#4F8CFF]/10 border-[#4F8CFF]/25 text-[#4F8CFF]"
-              : "bg-[#111111] border-white/[0.07] text-[#484848]"
-              }`}
+            className={`flex items-center gap-2 px-2.5 py-1 rounded border text-[10px] font-mono transition-all duration-500 ${
+              node.accent
+                ? pulse
+                  ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/50 text-[#4F8CFF] shadow-[0_0_16px_rgba(79,140,255,0.2)]"
+                  : "bg-[#4F8CFF]/10 border-[#4F8CFF]/25 text-[#4F8CFF]"
+                : "bg-[#111111] border-white/[0.07] text-[#484848]"
+            }`}
             style={{ width: node.w }}
           >
             <div
@@ -531,14 +576,23 @@ function ShowcaseMap() {
 // and ends exactly at the node border — never floating, never overshooting.
 
 // Node layout: id maps to (cx%, cy%) as fractions of the container
-const DEP_NODE_LAYOUT: Record<string, { cx: number; cy: number; label: string; selected?: boolean; connected?: boolean }> = {
-  center: { cx: 0.50, cy: 0.44, label: "ReactFiber.js", selected: true },
-  a:      { cx: 0.13, cy: 0.16, label: "scheduler.js",  connected: true },
-  b:      { cx: 0.70, cy: 0.10, label: "ReactDOM.js",   connected: true },
-  c:      { cx: 0.80, cy: 0.55, label: "hooks.js",      connected: true },
-  d:      { cx: 0.18, cy: 0.68, label: "events.js",     connected: true },
-  e:      { cx: 0.55, cy: 0.78, label: "shared.js" },
-  f:      { cx: 0.07, cy: 0.44, label: "context.js" },
+const DEP_NODE_LAYOUT: Record<
+  string,
+  {
+    cx: number;
+    cy: number;
+    label: string;
+    selected?: boolean;
+    connected?: boolean;
+  }
+> = {
+  center: { cx: 0.5, cy: 0.44, label: "ReactFiber.js", selected: true },
+  a: { cx: 0.13, cy: 0.16, label: "scheduler.js", connected: true },
+  b: { cx: 0.7, cy: 0.1, label: "ReactDOM.js", connected: true },
+  c: { cx: 0.8, cy: 0.55, label: "hooks.js", connected: true },
+  d: { cx: 0.18, cy: 0.68, label: "events.js", connected: true },
+  e: { cx: 0.55, cy: 0.78, label: "shared.js" },
+  f: { cx: 0.07, cy: 0.44, label: "context.js" },
 };
 
 // Edges connect center → each connected node
@@ -569,7 +623,9 @@ function rectBorderPoint(
 function ShowcaseDependency() {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const nodeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
-  const [paths, setPaths] = React.useState<Array<{ id: string; d: string }>>([]);
+  const [paths, setPaths] = React.useState<Array<{ id: string; d: string }>>(
+    [],
+  );
   const [lit, setLit] = React.useState(0);
 
   // Measure nodes and compute edge paths after render
@@ -581,13 +637,16 @@ function ShowcaseDependency() {
       const cRect = container.getBoundingClientRect();
       if (cRect.width === 0) return;
 
-      const nodeRects: Record<string, { x: number; y: number; w: number; h: number }> = {};
+      const nodeRects: Record<
+        string,
+        { x: number; y: number; w: number; h: number }
+      > = {};
       for (const [id, el] of Object.entries(nodeRefs.current)) {
         if (!el) continue;
         const r = el.getBoundingClientRect();
         nodeRects[id] = {
           x: r.left - cRect.left + r.width / 2,
-          y: r.top  - cRect.top  + r.height / 2,
+          y: r.top - cRect.top + r.height / 2,
           w: r.width,
           h: r.height,
         };
@@ -609,7 +668,7 @@ function ShowcaseDependency() {
         // Start point: on the border of the source rect, heading toward target
         const start = rectBorderPoint(src, ux, uy);
         // End point: on the border of the target rect, heading away from source
-        const end   = rectBorderPoint(tgt, -ux, -uy);
+        const end = rectBorderPoint(tgt, -ux, -uy);
 
         return {
           id: `${from}-${to}`,
@@ -657,8 +716,20 @@ function ShowcaseDependency() {
       >
         <defs>
           {/* Reusable dash pattern so spacing never stretches */}
-          <pattern id="depDash" patternUnits="userSpaceOnUse" width="8" height="1">
-            <line x1="0" y1="0.5" x2="5" y2="0.5" stroke="inherit" strokeWidth="1" />
+          <pattern
+            id="depDash"
+            patternUnits="userSpaceOnUse"
+            width="8"
+            height="1"
+          >
+            <line
+              x1="0"
+              y1="0.5"
+              x2="5"
+              y2="0.5"
+              stroke="inherit"
+              strokeWidth="1"
+            />
           </pattern>
         </defs>
 
@@ -673,7 +744,9 @@ function ShowcaseDependency() {
               strokeWidth={active ? 1.5 : 1}
               strokeDasharray="5 4"
               strokeLinecap="round"
-              style={{ transition: "stroke 0.35s ease, stroke-width 0.35s ease" }}
+              style={{
+                transition: "stroke 0.35s ease, stroke-width 0.35s ease",
+              }}
             />
           );
         })}
@@ -686,12 +759,14 @@ function ShowcaseDependency() {
           className="absolute"
           style={{
             left: `${n.cx * 100}%`,
-            top:  `${n.cy * 100}%`,
+            top: `${n.cy * 100}%`,
             transform: "translate(-50%, -50%)",
           }}
         >
           <div
-            ref={(el) => { nodeRefs.current[id] = el; }}
+            ref={(el) => {
+              nodeRefs.current[id] = el;
+            }}
             className={`px-2.5 py-1 rounded border text-[10px] font-mono whitespace-nowrap transition-all duration-300 ${
               n.selected
                 ? "bg-[#4F8CFF]/20 border-[#4F8CFF]/60 text-[#4F8CFF] shadow-[0_0_20px_rgba(79,140,255,0.25)]"
@@ -716,8 +791,16 @@ function ShowcaseDependency() {
 
 const SEARCH_RESULTS = [
   { name: "ReactFiber.js", path: "packages/react-reconciler/src/", file: true },
-  { name: "ReactFiberHooks.js", path: "packages/react-reconciler/src/", file: true },
-  { name: "ReactFiberRoot.js", path: "packages/react-reconciler/src/", file: true },
+  {
+    name: "ReactFiberHooks.js",
+    path: "packages/react-reconciler/src/",
+    file: true,
+  },
+  {
+    name: "ReactFiberRoot.js",
+    path: "packages/react-reconciler/src/",
+    file: true,
+  },
 ];
 
 const SEARCH_PHRASE = "ReactFiber";
@@ -752,8 +835,22 @@ function ShowcaseSearch() {
       <div className="flex items-center gap-2 px-3 py-2 bg-[#111111] border border-white/[0.1] rounded-lg">
         <div className="w-3.5 h-3.5 text-[#444444]">
           <svg viewBox="0 0 16 16" fill="none">
-            <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle
+              cx="6.5"
+              cy="6.5"
+              r="4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <line
+              x1="10"
+              y1="10"
+              x2="14"
+              y2="14"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
           </svg>
         </div>
         <span className="text-xs font-mono text-white tracking-wide">
@@ -778,12 +875,21 @@ function ShowcaseSearch() {
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.07 }}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[10px] font-mono ${i === 0 ? "bg-[#4F8CFF]/10 border border-[#4F8CFF]/20" : "bg-[#111111] border border-white/[0.05]"
-                  }`}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[10px] font-mono ${
+                  i === 0
+                    ? "bg-[#4F8CFF]/10 border border-[#4F8CFF]/20"
+                    : "bg-[#111111] border border-white/[0.05]"
+                }`}
               >
-                <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 0 ? "bg-[#4F8CFF]" : "bg-[#333333]"}`} />
-                <span className={i === 0 ? "text-[#4F8CFF]" : "text-[#555555]"}>{r.name}</span>
-                <span className="text-[#333333] truncate ml-auto">{r.path}</span>
+                <div
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${i === 0 ? "bg-[#4F8CFF]" : "bg-[#333333]"}`}
+                />
+                <span className={i === 0 ? "text-[#4F8CFF]" : "text-[#555555]"}>
+                  {r.name}
+                </span>
+                <span className="text-[#333333] truncate ml-auto">
+                  {r.path}
+                </span>
               </motion.div>
             ))}
           </motion.div>
@@ -823,8 +929,12 @@ function ShowcaseInspector() {
           transition={{ delay: 0.15 + i * 0.07, duration: 0.35 }}
           className="flex justify-between items-center py-1.5 border-b border-white/[0.04]"
         >
-          <span className="text-[10px] text-[#444444] font-medium">{f.label}</span>
-          <span className="text-[10px] text-[#888888] font-mono">{f.value}</span>
+          <span className="text-[10px] text-[#444444] font-medium">
+            {f.label}
+          </span>
+          <span className="text-[10px] text-[#888888] font-mono">
+            {f.value}
+          </span>
         </motion.div>
       ))}
       <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
@@ -879,7 +989,9 @@ function FeatureRow({
         <h3 className="text-2xl font-bold text-white leading-snug max-w-xs">
           {headline}
         </h3>
-        <p className="text-sm text-[#666666] leading-relaxed max-w-sm">{body}</p>
+        <p className="text-sm text-[#666666] leading-relaxed max-w-sm">
+          {body}
+        </p>
       </div>
 
       {/* Animated showcase window */}
@@ -1013,7 +1125,13 @@ export default function Home() {
       {/* ── ERROR MODAL ─────────────────────────────────────────────────── */}
       <AnimatePresence>
         {loadingState === "error" && errorMessage && (
-          <Modal isOpen onClose={() => { reset(); setSubmittedUrl(""); }}>
+          <Modal
+            isOpen
+            onClose={() => {
+              reset();
+              setSubmittedUrl("");
+            }}
+          >
             <div className="flex flex-col items-center text-center py-8 gap-4">
               <div className="w-10 h-10 rounded-full bg-[#FF5F56]/10 border border-[#FF5F56]/20 flex items-center justify-center">
                 <Info className="w-4 h-4 text-[#FF5F56]" />
@@ -1026,7 +1144,13 @@ export default function Home() {
                   {errorMessage}
                 </p>
               </div>
-              <Button onClick={() => { reset(); setSubmittedUrl(""); }} size="sm">
+              <Button
+                onClick={() => {
+                  reset();
+                  setSubmittedUrl("");
+                }}
+                size="sm"
+              >
                 Dismiss
               </Button>
             </div>
@@ -1261,7 +1385,16 @@ export default function Home() {
             <div className="flex items-center gap-2 text-[#3A3A3A] text-xs">
               <span className="font-semibold text-[#4F8CFF]">v1.0.0</span>
               <span>·</span>
-              <span>© 2026 CodeAtlas by <a href="https://github.com/isthatpratham" target="_blank" className="hover:text-white transition-colors">Pratham</a></span>
+              <span>
+                © 2026 CodeAtlas by{" "}
+                <a
+                  href="https://github.com/isthatpratham"
+                  target="_blank"
+                  className="hover:text-white transition-colors"
+                >
+                  Pratham
+                </a>
+              </span>
             </div>
             <div className="flex items-center gap-5 text-xs text-[#444444]">
               <a

@@ -9,6 +9,7 @@ import { SidebarTree } from "./SidebarTree";
 import { InspectorPanel } from "./InspectorPanel";
 import { StatusBar } from "./StatusBar";
 import { GraphCanvas } from "./GraphCanvas";
+import { PerspectiveSwitcher } from "./PerspectiveSwitcher";
 
 export function VisualizerWorkbench() {
   const { repository, selectedNodeId, reset } = useGraphStore();
@@ -22,44 +23,48 @@ export function VisualizerWorkbench() {
       <div className="flex flex-col h-screen bg-[#0A0A0A] text-white overflow-hidden font-montserrat">
         {/* ── Header ────────────────────────────────────────────────────── */}
         <header className="h-12 border-b border-white/[0.07] bg-[#0A0A0A] px-4 flex items-center justify-between shrink-0 select-none z-10">
-          {/* Left: back button + branding */}
-          <div className="flex items-center gap-3">
+          {/* Left: back button + branding + repo name */}
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={reset}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/[0.05] text-[#666666] hover:text-white transition-colors text-xs font-semibold"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-white/[0.05] text-[#666666] hover:text-white transition-colors text-xs font-semibold shrink-0"
               title="Back to landing page"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Exit
             </button>
 
-            <span className="h-4 w-px bg-white/[0.08]" />
+            <span className="h-4 w-px bg-white/[0.08] shrink-0" />
 
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded bg-[#4F8CFF] flex items-center justify-center text-[9px] font-bold text-white">
-                CA
-              </span>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="CodeAtlas Logo"
+                className="w-5 h-5 object-contain"
+              />
               <h1 className="font-semibold text-xs tracking-widest text-white uppercase">
                 CodeAtlas
               </h1>
             </div>
 
-            <span className="h-4 w-px bg-white/[0.08]" />
+            <span className="h-4 w-px bg-white/[0.08] shrink-0" />
 
-            {/* Repo name */}
-            <span className="text-xs text-[#555555] font-mono truncate max-w-xs">
+            <span className="text-xs text-[#555555] font-mono truncate max-w-[180px]">
               {repository.fullName}
             </span>
           </div>
 
-          {/* Center: search */}
-          <SearchBar />
+          {/* Center: perspective switcher + search */}
+          <div className="flex items-center gap-3">
+            <PerspectiveSwitcher />
+            <SearchBar />
+          </div>
 
           {/* Right: actions */}
-          <div className="flex items-center gap-2">
-            {/* Inspector state hint */}
+          <div className="flex items-center gap-2 shrink-0">
             {!hasSelection && (
-              <span className="hidden lg:flex items-center gap-1.5 text-[11px] text-[#3A3A3A]">
+              <span className="hidden xl:flex items-center gap-1.5 text-[11px] text-[#3A3A3A]">
                 <PanelRightOpen className="w-3.5 h-3.5" />
                 Select a node to inspect
               </span>
