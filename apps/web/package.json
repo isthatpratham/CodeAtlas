@@ -9,29 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@codeatlas/config": "workspace:*",
+    "@codeatlas/types": "workspace:*",
+    "@codeatlas/ui": "workspace:*",
+    "@codeatlas/utils": "workspace:*",
     "@xyflow/react": "^12.3.5",
     "framer-motion": "^11.13.1",
-    "zustand": "^5.0.1",
     "lucide-react": "^0.462.0",
+    "next": "16.2.10",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-hook-form": "^7.53.2",
     "zod": "^3.23.8",
-    "@codeatlas/ui": "workspace:*",
-    "@codeatlas/types": "workspace:*",
-    "@codeatlas/config": "workspace:*",
-    "@codeatlas/utils": "workspace:*"
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@codeatlas/eslint-config": "workspace:*",
+    "@codeatlas/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20.14.9",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^4.0.0",
-    "@tailwindcss/postcss": "^4.0.0",
-    "typescript": "^5.5.4",
-    "@codeatlas/typescript-config": "workspace:*",
-    "@codeatlas/eslint-config": "workspace:*"
+    "typescript": "^5.5.4"
   }
 }
